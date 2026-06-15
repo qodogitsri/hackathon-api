@@ -87,12 +87,12 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/api/tasks", response_model=list[Task])
+@app.get("/api/items", response_model=list[Task])
 def list_tasks() -> list[Task]:
     return sorted(tasks.values(), key=lambda task: task.created_at)
 
 
-@app.post("/api/tasks", response_model=Task, status_code=201)
+@app.post("/api/items", response_model=Task, status_code=201)
 def create_task(payload: TaskCreate) -> Task:
     task = Task(
         id=str(uuid4()),
@@ -104,7 +104,7 @@ def create_task(payload: TaskCreate) -> Task:
     return task
 
 
-@app.patch("/api/tasks/{task_id}", response_model=Task)
+@app.patch("/api/items/{task_id}", response_model=Task)
 def update_task(
     task_id: Annotated[str, Path(min_length=1)],
     payload: TaskUpdate,
@@ -123,7 +123,7 @@ def update_task(
     return updated
 
 
-@app.delete("/api/tasks/{task_id}", status_code=204)
+@app.delete("/api/items/{task_id}", status_code=204)
 def delete_task(task_id: Annotated[str, Path(min_length=1)]) -> None:
     if task_id not in tasks:
         raise HTTPException(status_code=404, detail="Task not found")
