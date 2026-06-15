@@ -17,6 +17,7 @@ The API runs at `http://localhost:8000` by default.
 
 - `GET /health`
 - `GET /api/tasks`
+- `GET /api/tasks/summary`
 - `POST /api/tasks`
 - `PATCH /api/tasks/{task_id}`
 - `DELETE /api/tasks/{task_id}`

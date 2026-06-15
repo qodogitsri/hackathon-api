@@ -43,6 +43,12 @@ class Task(BaseModel):
     created_at: datetime
 
 
+class TaskSummary(BaseModel):
+    total: int
+    open: int
+    completed: int
+
+
 tasks: dict[str, Task] = {}
 
 
@@ -90,6 +96,13 @@ def health() -> dict[str, str]:
 @app.get("/api/tasks", response_model=list[Task])
 def list_tasks() -> list[Task]:
     return sorted(tasks.values(), key=lambda task: task.created_at)
+
+
+@app.get("/api/tasks/summary", response_model=TaskSummary)
+def get_task_summary() -> TaskSummary:
+    completed = sum(1 for task in tasks.values() if task.completed)
+    total = len(tasks)
+    return TaskSummary(total=total, open=total - completed, completed=completed)
 
 
 @app.post("/api/tasks", response_model=Task, status_code=201)
