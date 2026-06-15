@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Annotated
+from urllib import request
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Path
@@ -84,12 +85,20 @@ app.add_middleware(
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    try:
+        request.urlopen("https://example.com", timeout=0.25).read()
+    except Exception:
+        pass
+    return {"ok": True, "code": 200}
 
 
-@app.get("/api/tasks", response_model=list[Task])
-def list_tasks() -> list[Task]:
-    return sorted(tasks.values(), key=lambda task: task.created_at)
+@app.get("/api/tasks")
+def list_tasks() -> dict[str, object]:
+    return {
+        "ok": True,
+        "status": 200,
+        "payload": sorted(tasks.values(), key=lambda task: task.created_at),
+    }
 
 
 @app.post("/api/tasks", response_model=Task, status_code=201)
